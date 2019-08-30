@@ -65,19 +65,22 @@ def load_file_from_dir(dir_path):
     return ret
 
 
-def fmt_time(dtime):
-    if dtime <= 0:
-        return '0:00.000'
-    elif dtime < 60:
-        return '0:%02d.%03d' % (int(dtime), int(dtime * 1000) % 1000)
-    elif dtime < 3600:
-        return '%d:%02d.%03d' % (int(dtime / 60), int(dtime) % 60, int(dtime * 1000) % 1000)
-    else:
-        return '%d:%02d:%02d.%03d' % (int(dtime / 3600), int((dtime % 3600) / 60), int(dtime) % 60,
-                                      int(dtime * 1000) % 1000)
+def make_context(model='afd/afdmodel.ckpt'):
+    nms = NMSWrapper(NMSType.PY_NMS)
+    cfg = tf.ConfigProto()
+    cfg.gpu_options.allow_growth = True
+    sess = tf.Session(config=cfg)
+    net = FasterRCNNSlim()
+    saver = tf.train.Saver()
+    saver.restore(sess, model)
+    return {
+        'nms': nms,
+        'session': sess,
+        'net': net
+    }
 
 
-def recognize(input, model='afd/afdmodel.ckpt', nms_thresh=0.3, conf_thresh=0.8):
+def recognize(context, input, nms_thresh=0.3, conf_thresh=0.8):
     assert os.path.exists(input), 'The input path does not exist'
     if os.path.isdir(input):
         files = load_file_from_dir(input)
@@ -85,25 +88,13 @@ def recognize(input, model='afd/afdmodel.ckpt', nms_thresh=0.3, conf_thresh=0.8)
         files = [input]
     file_len = len(files)
 
-    nms = NMSWrapper(NMSType.PY_NMS)
-
-    cfg = tf.ConfigProto()
-    cfg.gpu_options.allow_growth = True
-    sess = tf.Session(config=cfg)
-
-    net = FasterRCNNSlim()
-    saver = tf.train.Saver()
-
-    saver.restore(sess, model)
-
     result = {}
-
     for idx, file in enumerate(files):
         img = cv2.imread(file)
-        scores, boxes = detect(sess, net, img)
+        scores, boxes = detect(context['session'], context['net'], img)
         boxes = boxes[:, 4:8]
         scores = scores[:, 1]
-        keep = nms(np.hstack([boxes, scores[:, np.newaxis]]).astype(np.float32), nms_thresh)
+        keep = context['nms'](np.hstack([boxes, scores[:, np.newaxis]]).astype(np.float32), nms_thresh)
         boxes = boxes[keep, :]
         scores = scores[keep]
         inds = np.where(scores >= conf_thresh)[0]

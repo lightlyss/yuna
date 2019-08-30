@@ -1,11 +1,13 @@
 from flask import Flask, jsonify, abort
 import requests
 import tensorflow as tf
-from afdetector import recognize
+from afdetector import make_context, recognize
 
-# Util -------------------------------------------------------------------
+# Setup -------------------------------------------------------------------
+context = make_context()
+
 def downloadFile(url):
-    dst = 'server/static/' + url.split('/')[-1]
+    dst = 'static/' + url.split('/')[-1]
     req = requests.get(url)
     if (req.status_code != 200):
         return None
@@ -13,17 +15,17 @@ def downloadFile(url):
         f.write(req.content)
     return dst
 
-# Flask ------------------------------------------------------------------------
+# Routes ------------------------------------------------------------------------
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def index():
     return jsonify({
         'service': 'yuna',
         'tensorflow': tf.__version__
     }), 200
 
-@app.route('/detect', methods=['GET'])
+@app.route('/api/detect', methods=['GET'])
 def predict():
     # if (not request.json or not 'url' in request.json):
         # abort(400)
@@ -31,5 +33,5 @@ def predict():
     imgPath = downloadFile('https://pbs.twimg.com/media/EC-F0pFVUAAumMJ.jpg')
     if (imgPath is None):
         abort(502)
-    res = recognize(imgPath)
-    return jsonify({'prediction': res}), 200
+    res = recognize(context, imgPath)
+    return jsonify(res[imgPath]), 200
