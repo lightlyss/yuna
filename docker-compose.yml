@@ -1,16 +1,10 @@
 version: "3"
 services:
-  # redis:
-  #   image: redis:5-alpine
-  #   restart: on-failure
   yuna:
     build: .
     restart: on-failure
-    # depends_on:
-    #   - redis
     environment:
-      # REDIS_URL: redis://redis:6379
-      FLASK_APP: yuna.py
+      FLASK_APP: server/yuna.py
       YUNA_TOKEN:
     ports:
       - "5000:5000"
