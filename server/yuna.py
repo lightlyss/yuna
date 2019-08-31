@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, abort, redirect
+from flask import Flask, jsonify, abort, redirect, request
 import requests
 import tensorflow as tf
 from afdetector import make_context, recognize
+import re
 
 # Setup -------------------------------------------------------------------
 context = make_context()
@@ -33,8 +34,11 @@ def api():
 def detect():
     if (not request.json or not 'url' in request.json):
         abort(400)
-    imgPath = downloadFile(request.json['url'])
+    url = request.json['url']
+    if not bool(re.search('^(jpe?g|png|gif|bmp)$', url.split('.')[-1].lower())):
+        abort(400)
+    imgPath = downloadFile(url)
     if (imgPath is None):
         abort(502)
     res = recognize(context, imgPath)
-    return jsonify(res[imgPath]), 200
+    return jsonify(res), 200
