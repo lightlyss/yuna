@@ -1,3 +1,5 @@
+[![Server Build](https://github.com/lightlyss/yuna/workflows/server/badge.svg)](https://github.com/lightlyss/yuna)
+[![Client Build](https://github.com/lightlyss/yuna/workflows/client/badge.svg)](https://github.com/lightlyss/yuna)
 # Yuna
 A Flask server that performs facial recognition using deep learning, powered by
 TensorFlow. Comes packaged with a Discord bot.
