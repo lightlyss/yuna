@@ -3,12 +3,11 @@ name: server
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build server --file server/Dockerfile --tag yuna:$(date +%s)
+      run: docker build server --tag yuna:latest
+    - name: Test in a Docker container
+      run: docker run yuna:latest make test
