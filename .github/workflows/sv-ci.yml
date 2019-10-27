@@ -10,7 +10,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Defragment the TensorFlow model
-      run: make defrag-model
     - name: Build the Docker image
       run: docker build server --file server/Dockerfile --tag yuna:$(date +%s)

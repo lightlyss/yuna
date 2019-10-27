@@ -1,4 +1,4 @@
-MDIR=server/afd/
+MDIR=afd/
 
 MODEL=$(MDIR)afdmodel.ckpt.data-00000-of-00001
 
