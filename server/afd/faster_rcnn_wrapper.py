@@ -1,6 +1,6 @@
 import tensorflow as tf
-from tensorflow.contrib.slim.python.slim.nets.resnet_v1 import resnet_v1_block, resnet_v1
 import tensorflow.contrib.slim as slim
+from tensorflow.contrib.slim.python.slim.nets.resnet_v1 import resnet_v1_block, resnet_v1
 from tensorflow.contrib.slim.python.slim.nets.resnet_utils import arg_scope, conv2d_same
 import numpy as np
 

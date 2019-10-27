@@ -3,7 +3,7 @@ import cv2
 import tensorflow as tf
 import os
 
-import .faster_rcnn_wrapper.FasterRCNNSlim
+from .faster_rcnn_wrapper import FasterRCNNSlim
 from .nms_wrapper import NMSType, NMSWrapper
 
 def detect(sess, rcnn_cls, image):
