@@ -3,8 +3,8 @@ import cv2
 import tensorflow as tf
 import os
 
-import afd.faster_rcnn_wrapper.FasterRCNNSlim
-from afd.nms_wrapper import NMSType, NMSWrapper
+import .faster_rcnn_wrapper.FasterRCNNSlim
+from .nms_wrapper import NMSType, NMSWrapper
 
 def detect(sess, rcnn_cls, image):
     # pre-processing image for Faster-RCNN
