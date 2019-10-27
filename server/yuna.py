@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, abort, redirect, request
 import requests
 import tensorflow as tf
-from afdetector import make_context, recognize
 import re
+from afd.afdetector import make_context, recognize
 
 # Setup -------------------------------------------------------------------
 context = make_context()

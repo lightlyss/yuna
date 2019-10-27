@@ -9,5 +9,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the Docker image
       run: docker build server --tag yuna:latest
-    - name: Test in a Docker container
+    - name: Test Docker container
       run: docker run yuna:latest make test

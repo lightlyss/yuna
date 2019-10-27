@@ -1,4 +1,3 @@
-from __future__ import division
 import tensorflow as tf
 from tensorflow.contrib.slim.python.slim.nets.resnet_v1 import resnet_v1_block, resnet_v1
 import tensorflow.contrib.slim as slim

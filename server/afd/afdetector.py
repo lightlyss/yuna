@@ -1,9 +1,9 @@
-from __future__ import division
 import numpy as np
 import cv2
-from faster_rcnn_wrapper import FasterRCNNSlim
 import tensorflow as tf
 import os
+
+import faster_rcnn_wrapper.FasterRCNNSlim
 from nms_wrapper import NMSType, NMSWrapper
 
 def detect(sess, rcnn_cls, image):
@@ -65,7 +65,7 @@ def load_file_from_dir(dir_path):
     return ret
 
 
-def make_context(model='afd/afdmodel.ckpt'):
+def make_context(model='afdmodel/afdmodel.ckpt'):
     nms = NMSWrapper(NMSType.PY_NMS)
     cfg = tf.ConfigProto()
     cfg.gpu_options.allow_growth = True
