@@ -1,17 +1,13 @@
-version: "3"
+version: "2"
 services:
   yuna:
     build: server
-    restart: on-failure
-    environment:
-      FLASK_APP: yuna.py
     ports:
       - "5000:5000"
   yuna-bot:
     build: client
     depends_on:
       - yuna
-    restart: on-failure
     environment:
       YUNA_HOST: http://yuna:5000
       YUNA_TOKEN:

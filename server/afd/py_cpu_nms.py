@@ -4,7 +4,6 @@
 # Licensed under The MIT License [see LICENSE for details]
 # Written by Ross Girshick
 # --------------------------------------------------------
-from __future__ import division
 import numpy as np
 
 

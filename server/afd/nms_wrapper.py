@@ -11,7 +11,7 @@ class NMSWrapper:
     def __init__(self, nms_type=default_nms_type):
         assert type(nms_type) == NMSType
         if nms_type == NMSType.PY_NMS:
-            from py_cpu_nms import py_cpu_nms
+            from .py_cpu_nms import py_cpu_nms
             self._nms = py_cpu_nms
         else:
             raise ValueError('Specified NMS type is not implemented')
