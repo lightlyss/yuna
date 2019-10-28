@@ -9,18 +9,18 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn('yuna', str(res.data))
     def test_detect_no_url(self):
-        res = self.app.post('/api/detect', data={})
+        res = self.app.post('/api/detect', json={})
         self.assertEqual(res.status_code, 400)
     def test_detect_bad_url(self):
-        res = self.app.post('/api/detect', data={'url': 'https://github.com'})
+        res = self.app.post('/api/detect', json={'url': 'https://github.com'})
         self.assertEqual(res.status_code, 400)
     def test_detect_bad_upstream(self):
-        res = self.app.post('/api/detect', data={
+        res = self.app.post('/api/detect', json={
             'url': 'http://localhost:3000/img/demo.png'
         })
         self.assertEqual(res.status_code, 502)
     def test_detect(self):
-        res = self.app.post('/api/detect', data={
+        res = self.app.post('/api/detect', json={
             'url': 'https://raw.githubusercontent.com/lightlyss/yuna/master/demo.png'
         })
         self.assertEqual(res.status_code, 200)
