@@ -9,7 +9,10 @@ context = make_context()
 
 def downloadFile(url):
     dst = 'static/' + url.split('/')[-1]
-    req = requests.get(url)
+    try:
+        req = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        return None
     if (req.status_code != 200):
         return None
     with open(dst, 'wb') as f:
