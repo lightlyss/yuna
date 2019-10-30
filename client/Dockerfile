@@ -1,8 +1,10 @@
-FROM python:3.7.4-alpine
+FROM python:3.8.0-slim
 USER root
 WORKDIR /yuna
 
-RUN apk --no-cache add make gcc g++
+RUN apt-get update -q
+RUN apt-get install --no-install-recommends -qy make gcc g++
+
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 

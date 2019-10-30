@@ -8,8 +8,11 @@ from afd.afdetector import make_context, recognize
 # Setup -------------------------------------------------------------------
 context = make_context()
 
+def getExt(url):
+    return url.split('.')[-1].lower()
+
 def downloadFile(url):
-    dst = f'static/{str(uuid.uuid4())}.{url.split('.')[-1]}'
+    dst = f'static/{str(uuid.uuid4())}.{getExt(url)}'
     try:
         req = requests.get(url)
     except requests.exceptions.RequestException as e:
@@ -39,7 +42,7 @@ def detect():
     if (not request.json or not 'url' in request.json):
         abort(400)
     url = request.json['url']
-    if not bool(re.search('^(jpe?g|png|gif|bmp)$', url.split('.')[-1].lower())):
+    if not bool(re.search('^(jpe?g|png|gif|bmp)$', getExt(url))):
         abort(400)
     imgPath = downloadFile(url)
     if (imgPath is None):

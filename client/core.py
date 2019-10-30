@@ -11,6 +11,12 @@ class Code(Enum):
     EUPSTREAM = 502
     EUNCERTAIN = 721
 
+def getExt(path):
+    return path.split('.')[-1].lower()
+
+def getFname(path):
+    return path.split('/')[-1]
+
 def reqDetection(url):
     try:
         req = requests.post(f'{HOST}/api/detect', json={'url': url})
@@ -21,7 +27,7 @@ def reqDetection(url):
     return req.json()
 
 def downloadFile(path):
-    dst = f'cache/{path.split('/')[-1]}'
+    dst = f'cache/{getFname(path)}'
     try:
         req = requests.get(f'{HOST}/{path}')
     except requests.exceptions.RequestException as e:
@@ -33,7 +39,7 @@ def downloadFile(path):
     return dst
 
 def crop(path, bounds):
-    dst = f'cache/{str(uuid.uuid4())}.{path.split('.')[-1]}'
+    dst = f'cache/{str(uuid.uuid4())}.{getExt(path)}'
     img = cv2.imread(path)
     cimg = img[bounds[1]:bounds[3], bounds[0]:bounds[2]].copy()
     cv2.imwrite(dst, cimg)

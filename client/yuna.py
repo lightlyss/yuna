@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-from core import Code, afd
+from core import Code, afd, getFname
 
 TOKEN = os.getenv('YUNA_TOKEN')
 bot = commands.Bot(command_prefix='!')
@@ -29,13 +29,13 @@ async def detect(ctx, *args):
         if (item == Code.EUNCERTAIN):
             unknowns += 1
         elif (file is None):
-            fname = item.split('/')[-1]
-            file = discord.File(item, filename=fname)
+            file = discord.File(item, filename=getFname(item))
             embed = discord.Embed(
                 title=f'1st of {total}',
                 type='rich',
                 description=f'{unknowns} of {total} were low confidence'
-            ).set_image(url=f'attachment://{fname}')
+            ).set_image(url=f'attachment://{getFname(item)}')
+
     if (file is None):
         return await ctx.send(f'Identified {total} results, of which {unknowns} were low confidence.')
     return await ctx.send(file=file, embed=embed)
