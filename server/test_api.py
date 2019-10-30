@@ -21,7 +21,7 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(res.status_code, 502)
     def test_detect(self):
         res = self.app.post('/api/detect', json={
-            'url': 'https://raw.githubusercontent.com/lightlyss/yuna/master/demo.png'
+            'url': 'https://raw.githubusercontent.com/lightlyss/yuna/master/banner.png'
         })
         self.assertEqual(res.status_code, 200)
         self.assertIn('bbox', str(res.data))

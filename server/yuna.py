@@ -2,13 +2,14 @@ from flask import Flask, jsonify, abort, redirect, request
 import requests
 import tensorflow as tf
 import re
+import uuid
 from afd.afdetector import make_context, recognize
 
 # Setup -------------------------------------------------------------------
 context = make_context()
 
 def downloadFile(url):
-    dst = 'static/' + url.split('/')[-1]
+    dst = f'static/{str(uuid.uuid4())}.{url.split('.')[-1]}'
     try:
         req = requests.get(url)
     except requests.exceptions.RequestException as e:
