@@ -3,7 +3,7 @@ USER root
 WORKDIR /yuna
 
 RUN apt-get update -q
-RUN apt-get install --no-install-recommends -qy make
+RUN apt-get install --no-install-recommends -qy make libglib2.0
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
