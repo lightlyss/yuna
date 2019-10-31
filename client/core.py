@@ -41,6 +41,7 @@ def downloadFile(path):
 def crop(path, bounds):
     dst = f'cache/{str(uuid.uuid4())}.{getExt(path)}'
     img = cv2.imread(path)
+    bounds = [round(b) for b in bounds]
     cimg = img[bounds[1]:bounds[3], bounds[0]:bounds[2]].copy()
     cv2.imwrite(dst, cimg)
     return dst
