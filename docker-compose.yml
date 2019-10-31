@@ -9,5 +9,4 @@ services:
     depends_on:
       - yuna
     environment:
-      YUNA_HOST: http://yuna:5000
       YUNA_TOKEN:

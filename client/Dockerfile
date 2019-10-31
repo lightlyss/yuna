@@ -1,9 +1,16 @@
-FROM python:3.7.4-alpine as production
-
+FROM python:3.6.9-slim
 USER root
 WORKDIR /yuna
-COPY . ./
 
-RUN apk --no-cache add jpeg-dev zlib-dev make gcc g++
+RUN apt-get update -q
+RUN apt-get install --no-install-recommends -qy make libglib2.0
+
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
+
+ENV YUNA_HOST="http://yuna:5000"
+COPY cache/ ./cache/
+COPY Makefile ./
+COPY *.py ./
+
 CMD ["python", "-u", "yuna.py"]

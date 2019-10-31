@@ -1,39 +1,13 @@
 import discord
 from discord.ext import commands
 import os
-import requests
-from PIL import Image
+from core import Code, afd, getFname
 
-HOST = os.getenv('YUNA_HOST')
 TOKEN = os.getenv('YUNA_TOKEN')
 bot = commands.Bot(command_prefix='!')
 
-def postDetect(url):
-    req = requests.post(
-        HOST + '/api/detect',
-        json={'url': url}
-    )
-    if (req.status_code != 200):
-        return None
-    return req.json()
-
-def getImage(path):
-    dst = 'cache/' + path.split('/')[-1]
-    req = requests.get(HOST + '/' + path)
-    if (req.status_code != 200):
-        return None
-    with open(dst, 'wb') as f:
-        f.write(req.content)
-    return dst
-
-def crop(path, bounds):
-    img = Image.open(path)
-    cimg = img.crop((bounds[0], bounds[1], bounds[2], bounds[3]))
-    cimg.save(path)
-    return path
-
 @bot.command()
-async def scan(ctx, *args):
+async def detect(ctx, *args):
     url = None
     if (len(ctx.message.attachments) > 0):
         url = ctx.message.attachments[0].url
@@ -41,20 +15,29 @@ async def scan(ctx, *args):
         url = args[0]
     else:
         return None
-    await ctx.send('Okay, please be patient.')
-    res = postDetect(url)
-    if (res is None):
-        return await ctx.send('Something broke.')
-    # Only check the first face for now to avoid load balancing
-    for path in res:
-        for face in res[path]:
-            if (face['score'] < 0.7):
-                return await ctx.send('Over 30% uncertainty, dropping.')
-            localPath = getImage(path)
-            if (localPath is None):
-                return await ctx.send('System missing original image.')
-            croppedLocalPath = crop(localPath, face['bbox'])
-            return await ctx.send(file=discord.File(croppedLocalPath))
-    return await ctx.send('Found nothing of interest.')
+    await ctx.send(f'Observing at [{url}]...')
+
+    result = afd(url)
+    if (result == Code.EUPSTREAM):
+        return await ctx.send(f'[{url}] is unsupported!')
+
+    unknowns = 0
+    total = len(result)
+    file = None
+    embed = None
+    for item in result:
+        if (item == Code.EUNCERTAIN):
+            unknowns += 1
+        elif (file is None):
+            file = discord.File(item, filename=getFname(item))
+            embed = discord.Embed(
+                title=f'1st of {total}',
+                type='rich',
+                description=f'{unknowns} of {total} were low confidence'
+            ).set_image(url=f'attachment://{getFname(item)}')
+
+    if (file is None):
+        return await ctx.send(f'Identified {total} results, of which {unknowns} were low confidence.')
+    return await ctx.send(file=file, embed=embed)
 
 bot.run(TOKEN)

@@ -3,12 +3,17 @@ name: client
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
-    - name: Build the Docker image
-      run: docker build client --file client/Dockerfile --tag yuna-bot:$(date +%s)
+    - name: Define network
+      run: docker network create integration
+    - name: Build server
+      run: docker build server --tag yuna:latest
+    - name: Launch server in background
+      run: docker run -d --net integration --name yuna yuna:latest
+    - name: Build client
+      run: docker build client --tag yuna-bot:latest
+    - name: Test client
+      run: docker run --net integration yuna-bot:latest make test
